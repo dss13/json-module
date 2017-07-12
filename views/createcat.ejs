@@ -6,8 +6,47 @@
 <body>
 	<h4><%= title %></h4>
 	<form id="form">
-		<input type="text" name="category"><br>
+		<input type="text" name="category" id="category" placeholder="category"><br>
 	</form>
-	<input type="button" name="" id="add_field" value="Add field">
+	<input type="button" name="" id="add_field" value="Add field"><br>
+	<input type="button" name="" id="done" value="Done">
+    <p id="messge"><%= message %></p>
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript">
+		$('#add_field').click(function() {
+			$('#form').append('<input type="text" class="field" placeholder="field"><br>')
+		})
+		$('#done').click(function() {
+			var fields = $('.field').toArray()
+            if ($('#category').val()) {
+                if (fields.length) {
+                    var fieldNms = []
+                    for (var i = 0; i < fields.length; i++) {
+                        if (fields[i].value) {
+                            fieldNms[i] = fields[i].value
+                            $(fields[i]).css('border-color', 'initial')
+                        } else {
+                            // console.log(fields[i])
+                            $(fields[i]).css('border-color', 'red')
+                        }
+                    }
+                    if (fields.length == fieldNms.length) {
+                        // $.ajax({
+                        //     type: "POST",
+                        //     data: {category: $('#category').val(), info:fieldNms},
+                        //     url: "/cretect"
+                        // });
+                        $.post('/cretect', {category: "some", info:"fieldNms"}, function(dt, st) {
+                            console.log(st)
+                        })
+                    }
+                } else {
+                    $('#messge').text('add fields')
+                }   
+            } else {
+                $('#messge').text('enter category')
+            }
+		})
+	</script>
 </body>
 </html>
