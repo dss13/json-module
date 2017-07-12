@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title %></title>
+</head>
+<body>
+	<h4><%= title %></h4>
+	<p><%= message %></p><br>
+	<form method="post" action="/json/newMod">
+		<input type="text" name="filename" placeholder="Module name"><br>
+		<input type="text" name="foldername" placeholder="Category"><br>
+		<input type="text" name="image" placeholder="Image"><br>
+		<input type="text" name="link" placeholder="Link"><br>
+		<input type="submit" name="" value="Add Module">
+	</form>
+</body>
+</html>
