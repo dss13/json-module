@@ -23,26 +23,21 @@
                     var fieldNms = []
                     for (var i = 0; i < fields.length; i++) {
                         if (fields[i].value) {
-                            fieldNms[i] = fields[i].value
+                            fieldNms.push(fields[i].value)
                             $(fields[i]).css('border-color', 'initial')
                         } else {
                             // console.log(fields[i])
                             $(fields[i]).css('border-color', 'red')
                         }
                     }
-                    if (fields.length == fieldNms.length) {
-                        // $.ajax({
-                        //     type: "POST",
-                        //     data: {category: $('#category').val(), info:fieldNms},
-                        //     url: "/cretect"
-                        // });
-                        $.post('/cretect', {category: "some", info:"fieldNms"}, function(dt, st) {
-                            console.log(st)
+                    if (fields.length == fieldNms.length || 1) {
+                        $.post('/cretect', {category: $('#category').val(), info: JSON.stringify(fieldNms)}, function(data) {
+                        	console.log(data)
                         })
                     }
                 } else {
                     $('#messge').text('add fields')
-                }   
+                }
             } else {
                 $('#messge').text('enter category')
             }
