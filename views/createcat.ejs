@@ -32,7 +32,7 @@
                     }
                     if (fields.length == fieldNms.length || 1) {
                         $.post('/cretect', {category: $('#category').val(), info: JSON.stringify(fieldNms)}, function(data) {
-                        	console.log(data)
+                        	$('#messge').text(data)
                         })
                     }
                 } else {

@@ -92,10 +92,11 @@ router.post('/cretect', function(req, res, next) {
 		        // res.redirect('/createcat')
 		        // location.reload()
 			    // res.render('createcat', {title: 'Add the fields for a module', message: 'category created'})
+		    	res.send("Successfully added")
 		    }
 	    })
 	} else {
-		res.render('createcat', {title: 'Add the fields for a module', message: 'category already exists'})
+		res.send("Already exists")
 	}
 })
 
