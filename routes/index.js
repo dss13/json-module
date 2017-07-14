@@ -46,9 +46,16 @@ router.post('/api/register', function(req, res, next) {
 router.post('/json/newMod', function(req, res, next){
 	var filename = req.body.module
 	var foldername = req.body.category
+	var boj = JSON.parse(fs.readFileSync('./public/json/modules.json', 'utf8'))
+	boj[foldername].push(filename)
 	var data = JSON.parse(req.body.info)
 	var path = './public/json/' + foldername
 	if (!fs.existsSync(path + '/' + filename + '.json')) {
+		fs.writeFile('./public/json/modules.json', JSON.stringify(boj, null, 4), function(err){
+			if(err) {
+			    res.send("Error occured. Try again later.")
+			}
+		})
 		fs.writeFile('./public/json/' + foldername + '/' + filename + '.json', JSON.stringify(data, null, 4), function(err) {
 			if(err) {
 				console.log(err)
@@ -71,13 +78,20 @@ router.get('/addmod', function(req, res, next) {
 
 router.post('/cretect', function(req, res, next) {
 	var obj = JSON.parse(fs.readFileSync('./public/json/model.json', 'utf8'))
+	var boj = JSON.parse(fs.readFileSync('./public/json/modules.json', 'utf8'))
+	boj[req.body.category] = []
 	var path = './public/json/' + req.body.category
 	obj[req.body.category] = JSON.parse(req.body.info)
 	console.log(obj)
 	if (!fs.existsSync(path)) {
+		fs.writeFile('./public/json/modules.json', JSON.stringify(boj, null, 4), function(err){
+			if(err) {
+			    res.send("Error occured. Try again later.")
+			}
+		})
 	    fs.writeFile('./public/json/model.json', JSON.stringify(obj, null, 4), function(err) {
 		    if(err) {
-			    console.log(err)
+			    res.send("Error occured. Try again later.")
 		    } else {
 		        fs.mkdirSync(path)
 		    	res.send("Successfully added")
