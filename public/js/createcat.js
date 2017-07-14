@@ -9,7 +9,7 @@ $('#done').click(function() {
             var fieldNms = []
             for (var i = 0; i < fields.length; i++) {
                 if (fields[i].value) {
-                    fieldNms.push(fields[i].value)
+                    fieldNms.push(fields[i].value.toLowerCase())
                     $(fields[i]).css('border-color', 'initial')
                 } else {
                     // console.log(fields[i])
@@ -17,7 +17,7 @@ $('#done').click(function() {
                 }
             }
             if (fields.length == fieldNms.length) {
-                $.post('/cretect', {category: $('#category').val(), info: JSON.stringify(fieldNms)}, function(data) {
+                $.post('/cretect', {category: $('#category').val().toLowerCase(), info: JSON.stringify(fieldNms)}, function(data) {
                 	$('#messge').text(data)
                 })
             } else {

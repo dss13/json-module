@@ -5,13 +5,53 @@
 </head>
 <body>
 	<h4><%= title %></h4>
-	<p><%= message %></p><br>
-	<form method="post" action="/json/newMod">
-		<input type="text" name="filename" placeholder="Module name"><br>
-		<input type="text" name="foldername" placeholder="Category"><br>
-		<input type="text" name="image" placeholder="Image"><br>
-		<input type="text" name="link" placeholder="Link"><br>
-		<input type="submit" name="" value="Add Module">
+	<p id="messge"><%= message %></p><br>
+	<input type="text" name="filename" id="module" placeholder="Module name"><br>
+	<!-- <input type="text" name="foldername" placeholder="Category"><br>
+	<input type="text" name="image" placeholder="Image"><br>
+	<input type="text" name="link" placeholder="Link"><br>
+	<input type="submit" name="" value="Add Module"> -->
+	<select id="selectList">
+		<option disabled selected>Choose a category</option>
+	</select>
+	<div id="edit_form"><div>
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript">
+		var something = $.getJSON('/json/model.json', function(data) {
+			Object.keys(data).forEach(function(key) {
+				$('#selectList').append('<option value = "' + data[key] + '">' + key + '</option>')
+			})
+		})
+		$('#selectList').change(function(e) {
+			$('#edit_form').html('')
+			var category = $('#selectList option:selected').text()
+			var arr = $('#selectList').val().split(',')
+			for (var i = 0; i < arr.length; i++) {
+				$('#edit_form').append('<div><label>' + arr[i] + '</label>&nbsp;&nbsp;<input type="text" placeholder="' + arr[i] + '" class="field">')
+			}
+			$('#edit_form').append('<input type="button" value="Create module" id="save_btn">&nbsp;&nbsp;<input type="button" id="cancel_btn" value="Cancel">')
+		})
+		$(document.body).on('click', '#cancel_btn', function() {
+			$('#edit_form').html('')
+		})
+		$(document.body).on('click', '.delete_btn', function() {
+			$(this).parent('div').remove()
+		})
+		$(document.body).on('click', '#save_btn', function() {
+			var fields = $('.field').toArray()
+	        var fieldNms = {}
+	        if ($('#module').val()) {
+		        for (var i = 0; i < fields.length; i++) {
+	                fieldNms[fields[i].placeholder] = fields[i].value || ""
+		        }
+	            $.post('/json/newMod', {category: $('#selectList option:selected').text(), info: JSON.stringify(fieldNms), module: $('#module').val().toLowerCase()}, function(data) {
+	            	$('#messge').text(data)
+	            })
+	        } else {
+	        	$('#module').css('border-color', 'red')
+	        }
+		})
+	</script>
 	</form>
 </body>
 </html>

@@ -44,28 +44,20 @@ router.post('/api/register', function(req, res, next) {
 })
 
 router.post('/json/newMod', function(req, res, next){
-	var filename = req.body.filename
-	var foldername = req.body.foldername
-	var data = {
-		name: filename,
-		link: req.body.link || "",
-		image: req.body.image || ""
-	}
+	var filename = req.body.module
+	var foldername = req.body.category
+	var data = JSON.parse(req.body.info)
 	var path = './public/json/' + foldername
-	if (!fs.existsSync(path)) {
-		fs.mkdirSync(path)
-		console.log('folder created')
-	}
 	if (!fs.existsSync(path + '/' + filename + '.json')) {
 		fs.writeFile('./public/json/' + foldername + '/' + filename + '.json', JSON.stringify(data, null, 4), function(err) {
 			if(err) {
 				console.log(err)
 			} else {
-				res.render('addmodule', {title: 'Add module', message: 'Added new module'})
+				res.send('Added new module')
 			}
 		})
 	} else {
-		res.render('addmodule', {title: 'Add module', message: 'Module exists'})
+		res.send('Module already exists')
 	}
 })
 
@@ -79,7 +71,7 @@ router.get('/addmod', function(req, res, next) {
 
 router.post('/cretect', function(req, res, next) {
 	var obj = JSON.parse(fs.readFileSync('./public/json/model.json', 'utf8'))
-	var path = './public/' + req.body.category
+	var path = './public/json/' + req.body.category
 	obj[req.body.category] = JSON.parse(req.body.info)
 	console.log(obj)
 	if (!fs.existsSync(path)) {
