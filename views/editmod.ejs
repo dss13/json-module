@@ -1,9 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title><%= title %></title>
 </head>
 <body>
+	<select id="categoryList">
+		<option selected disabled>Choose category</option>
+	</select>
+	<select id="moduleList">
+		<option selected disabled>Choose module</option>
+	</select>
+	<div style="display: none;" id="formDiv">
 
+	</div>
+	<p id="messagePara"></p>
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript">
+		var somedata = null
+		$.ajaxSetup({
+			async: false
+		});
+		$.getJSON('/json/model.json', function(data) {
+			Object.keys(data).forEach(function(key) {
+				$('#categoryList').append('<option value = "' + data[key] + '">' + key + '</option>')
+			})
+		})
+		$.getJSON('/json/modules.json', function(data) {
+			somedata = data
+		})
+		$('#categoryList').change(function(e) {
+			$('#moduleList').html('')
+			var arr = somedata[$('#categoryList option:selected').text()]
+			for (var i = 0; i < arr.length; i++) {
+				$('#moduleList').append('<option value = "' + arr[i] + '">' + arr[i] + '</option>')
+			}
+			$('#formDiv').html('')
+			var category = $('#category option:selected').text()
+			var arr = $('#categoryList').val().split(',')
+			for (var i = 0; i < arr.length; i++) {
+				$('#formDiv').append('<div><label>' + arr[i] + '</label>&nbsp;&nbsp;<input type="text" id="' + arr[i] + '" class="field"></div>')
+			}
+			$('#formDiv').append('<input type="button" value="Save" id="save_btn">&nbsp;&nbsp;<input type="button" id="cancel_btn" value="Cancel">')
+		})
+		$('#moduleList').change(function() {
+			$.getJSON('/json/' + $('#categoryList option:selected').text() + '/' + $('#moduleList').val() + '.json', function(data) {
+				Object.keys(data).forEach(function(key) {
+					$('#' + key).val(data[key])
+				})
+			})
+			$('#formDiv').show()
+		})
+		$(document.body).on('click', '#cancel_btn', function() {
+			$('#formDiv').html('')
+			$('#formDiv').hide()
+		})
+		$(document.body).on('click', '#save_btn', function() {
+			var arr = $('.field').toArray()
+			var obj = {}
+			for (var i = 0; i < arr.length; i++) {
+				obj[arr[i].id] = arr[i].value
+			}
+			$.post('/edmod', {category: $('#categoryList option:selected').text(), module: $('#moduleList').val(), info: JSON.stringify(obj, null, 4)}, function(data) {
+				$('#messagePara').text(data)
+			})
+		})
+	</script>
 </body>
 </html>

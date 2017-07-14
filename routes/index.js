@@ -43,6 +43,10 @@ router.post('/api/register', function(req, res, next) {
 	})
 })
 
+router.get('/editmod',function(req, res, next) {
+	res.render('editmod', {title: 'Edit module'})
+})
+
 router.post('/json/newMod', function(req, res, next){
 	var filename = req.body.module
 	var foldername = req.body.category
@@ -104,6 +108,16 @@ router.post('/cretect', function(req, res, next) {
 
 router.get('/editcat', function(req, res, next) {
 	res.render('editcat', {title: 'Edit module'})
+})
+
+router.post('/edmod', function(req, res, next) {
+	fs.writeFile('./public/json/' + req.body.category + '/' + req.body.module + '.json', req.body.info, function(err) {
+		if(err) {
+			res.send('Error occured')
+		} else {
+			res.send('Updated module Successfully')
+		}
+	})
 })
 
 module.exports = router;
