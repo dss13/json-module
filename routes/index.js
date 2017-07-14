@@ -78,7 +78,6 @@ router.get('/addmod', function(req, res, next) {
 })
 
 router.post('/cretect', function(req, res, next) {
-	console.log(req.body)
 	var obj = JSON.parse(fs.readFileSync('./public/json/model.json', 'utf8'))
 	var path = './public/' + req.body.category
 	obj[req.body.category] = JSON.parse(req.body.info)
@@ -89,15 +88,16 @@ router.post('/cretect', function(req, res, next) {
 			    console.log(err)
 		    } else {
 		        fs.mkdirSync(path)
-		        // res.redirect('/createcat')
-		        // location.reload()
-			    // res.render('createcat', {title: 'Add the fields for a module', message: 'category created'})
 		    	res.send("Successfully added")
 		    }
 	    })
 	} else {
 		res.send("Already exists")
 	}
+})
+
+router.get('/editcat', function(req, res, next) {
+	res.render('editcat', {title: 'Edit module'})
 })
 
 module.exports = router;

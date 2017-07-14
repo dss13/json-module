@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title %></title>
+</head>
+<body>
+	<h4><%= title %></h4>
+	<select id="selectList">
+		<option disabled selected>Choose the module</option>
+	</select>
+	<div id="edit_form"><div>
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript">
+		var something = $.getJSON('/json/model.json', function(data) {
+			Object.keys(data).forEach(function(key) {
+				$('#selectList').append('<option value = "' + data[key] + '">' + key + '</option>')
+			})
+		})
+		$('#selectList').change(function(e) {
+			$('#edit_form').html('')
+			var category = $('#selectList option:selected').text()
+			var arr = $('#selectList').val().split(',')
+			$('#edit_form').append('<label for="category">Category</label>&nbsp;&nbsp;<input type="text" id="category" value="' + category + '"><br>')
+			for (var i = 0; i < arr.length; i++) {
+				$('#edit_form').append('<div><label>Field</label>&nbsp;&nbsp;<input type="text" value="' + arr[i] + '" class="field"><span class="delete_btn">&times</span></div>')
+			}
+			$('#edit_form').append('<input type="button" value="Save" id="save_btn">&nbsp;&nbsp;<input type="button" id="cancel_btn" value="Cancel">')
+		})
+		$(document.body).on('click', '#cancel_btn', function() {
+			$('#edit_form').html('')
+		})
+		$(document.body).on('click', '.delete_btn', function() {
+			$(this).parent('div').remove()
+		})
+		$(document.body).on('click', '#save_btn', function() {
+			var fields = $('.field').toArray()
+		    if ($('#category').val()) {
+		        if (fields.length) {
+		            var fieldNms = []
+		            for (var i = 0; i < fields.length; i++) {
+		                if (fields[i].value) {
+		                    fieldNms.push(fields[i].value)
+		                    $(fields[i]).css('border-color', 'initial')
+		                } else {
+		                    // console.log(fields[i])
+		                    $(fields[i]).css('border-color', 'red')
+		                }
+		            }
+		            if (fields.length == fieldNms.length) {
+		                $.post('/cretect', {category: $('#category').val(), info: JSON.stringify(fieldNms)}, function(data) {
+		                	$('#messge').text(data)
+		                })
+		            } else {
+		            	$('#messge').text('fill in all details')
+		            }
+		        } else {
+		            $('#messge').text('add fields')
+		        }
+		    } else {
+		        $('#messge').text('enter category')
+		    }
+		})
+	</script>
+</body>
+</html>
